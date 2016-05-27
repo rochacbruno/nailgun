@@ -330,8 +330,11 @@ class Architecture(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1234964>`_.
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
 
 class AuthSourceLDAP(
@@ -583,8 +586,11 @@ class AbstractComputeResource(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1250922>`_.
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
 
 class DiscoveredHost(
@@ -769,10 +775,13 @@ class DockerComputeResource(AbstractComputeResource):  # pylint:disable=R0901
         <https://bugzilla.redhat.com/show_bug.cgi?id=1223540>`_.
 
         """
-        return DockerComputeResource(
+        signals.pre_create.send(self, create_missing=create_missing)
+        entity = DockerComputeResource(
             self._server_config,
             id=self.create_json(create_missing)['id'],
         ).read()
+        signals.post_create.send(self, entity=entity)
+        return entity
 
     def read(self, entity=None, attrs=None, ignore=None):
         """Do extra work to fetch a complete set of attributes for this entity.
@@ -910,8 +919,11 @@ class ConfigTemplate(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1234973>`_.
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
     def update_payload(self, fields=None):
         """Wrap submitted data within an extra dict."""
@@ -1049,10 +1061,13 @@ class AbstractDockerContainer(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1223540>`_.
 
         """
-        return type(self)(
+        signals.pre_create.send(self, create_missing=create_missing)
+        entity = type(self)(
             self._server_config,
             id=self.create_json(create_missing)['id'],
         ).read()
+        signals.post_create.send(self, entity=entity)
+        return entity
 
     def power(self, synchronous=True, **kwargs):
         """Run a power operation on a container.
@@ -1634,10 +1649,13 @@ class Domain(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1219654>`_.
 
         """
-        return Domain(
+        signals.pre_create.send(self, create_missing=create_missing)
+        entity = Domain(
             self._server_config,
             id=self.create_json(create_missing)['id'],
         ).read()
+        signals.post_create.send(self, entity=entity)
+        return entity
 
     def read(self, entity=None, attrs=None, ignore=None):
         """Deal with weirdly named data returned from the server.
@@ -1658,8 +1676,11 @@ class Domain(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1234999>`_.
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
     def update_payload(self, fields=None):
         """Wrap submitted data within an extra dict."""
@@ -1707,8 +1728,11 @@ class Environment(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1262029>`_.
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
     def update_payload(self, fields=None):
         """Wrap submitted data within an extra dict."""
@@ -2038,10 +2062,13 @@ class HostGroup(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1235377>`_.
 
         """
-        return HostGroup(
+        signals.pre_create.send(self, create_missing=create_missing)
+        entity = HostGroup(
             self._server_config,
             id=self.create_json(create_missing)['id'],
         ).read()
+        signals.post_create.send(self, entity=entity)
+        return entity
 
     def create_payload(self):
         """Wrap submitted data within an extra dict.
@@ -2091,8 +2118,11 @@ class HostGroup(
           <https://bugzilla.redhat.com/show_bug.cgi?id=1235380>`_
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
     def update_payload(self, fields=None):
         """Wrap submitted data within an extra dict."""
@@ -2401,8 +2431,11 @@ class Host(  # pylint:disable=too-many-instance-attributes
             #1235041 <https://bugzilla.redhat.com/show_bug.cgi?id=1235041>`_.
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
     def update_payload(self, fields=None):
         """Wrap submitted data within an extra dict."""
@@ -2596,8 +2629,11 @@ class Location(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1216236>`_.
 
         """
+        signals.pre_create.send(self, create_missing=create_missing)
         attrs = self.create_json(create_missing)
-        return Location(self._server_config, id=attrs['id']).read()
+        entity = Location(self._server_config, id=attrs['id']).read()
+        signals.post_create.send(self, entity=entity)
+        return entity
 
     def read(self, entity=None, attrs=None, ignore=None):
         """Work around a bug in the server's response.
@@ -2619,8 +2655,11 @@ class Location(
         "Cannot use HTTP PUT to associate location with media"
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
     def update_payload(self, fields=None):
         """Wrap submitted data within an extra dict."""
@@ -2678,10 +2717,13 @@ class Media(
         <https://bugzilla.redhat.com/show_bug.cgi?id=1219653>`_.
 
         """
-        return Media(
+        signals.pre_create.send(self, create_missing=create_missing)
+        entity = Media(
             self._server_config,
             id=self.create_json(create_missing)['id'],
         ).read()
+        signals.post_create.send(self, entity=entity)
+        return entity
 
     def read(self, entity=None, attrs=None, ignore=None):
         """Rename ``path`` to ``path_``."""
@@ -2698,8 +2740,11 @@ class Media(
         "PUT /api/v2/medium/:id doesn't return all attributes"
 
         """
+        signals.pre_update.send(self, fields=fields)
         self.update_json(fields)
-        return self.read()
+        entity = self.read()
+        signals.post_update.send(self, entity=entity, fields=fields)
+        return entity
 
     def update_payload(self, fields=None):
         """Wrap submitted data within an extra dict."""

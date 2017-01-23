@@ -39,11 +39,11 @@ setup(
     ],
     packages=find_packages(),
     install_requires=[
-        'fauxfactory',
-        'inflection',
-        'packaging',
-        'pyxdg',
-        'requests>=2.7',
-        'blinker_herald'
+        'fauxfactory==2.0.9',
+        'inflection==0.3.1',
+        'packaging==16.7',
+        'pyxdg==0.25',
+        'requests==2.10.0',
+        'blinker-herald==0.2.0'
     ],
 )
